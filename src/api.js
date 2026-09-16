@@ -1,4 +1,10 @@
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+const configuredApiUrl = (import.meta.env.VITE_API_URL || 'https://crisismap-exmc.onrender.com/api').trim();
+
+// Accept either the Render root URL or its /api URL so Vercel environment
+// variables cannot accidentally produce requests such as /incidents instead of /api/incidents.
+const API_BASE = configuredApiUrl.replace(/\/$/, '').endsWith('/api')
+  ? configuredApiUrl.replace(/\/$/, '')
+  : `${configuredApiUrl.replace(/\/$/, '')}/api`;
 
 async function request(path, options = {}) {
   const token = localStorage.getItem('crisismap_token');
